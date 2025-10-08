@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Idyllic Captcha</title>
+    <title>Idyllic Captchaa</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
@@ -23,9 +23,26 @@
                 alert("Por favor completa el CAPTCHA");
                 return;
             }
-            // Aquí podrías enviar el token al launcher o backend
-            console.log("Captcha token:", token);
+
+            const userId = getUserIdFromQuery();
+            if (!userId) {
+                alert("❌ No se encontró userId en la URL");
+                return;
+            }
+
+            fetch(`http://localhost:4008/auth/captcha-verify`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token, userId })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al verificar CAPTCHA");
+                    return res.json();
+                })
+                .then(data => alert("✅ CAPTCHA verificado. Vuelve al launcher"))
+                .catch(err => console.error(err));
         }
+
     </script>
 </body>
 
