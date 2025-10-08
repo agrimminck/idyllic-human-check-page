@@ -4,10 +4,29 @@
 <head>
     <meta charset="utf-8">
     <title>Idyllic Captcha</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
-    <h2>Hola, CAPTCHA pronto irá aquí</h2>
+    <h2>Verificación Idyllic</h2>
+    <form id="captcha-form" onsubmit="onSubmit(event)">
+        <div class="g-recaptcha" data-sitekey="6LfZFOMrAAAAAIISq_nJKqP6HlSFgyZQQgdaD8Jm"></div>
+        <br>
+        <button type="submit">Verificar</button>
+    </form>
+
+    <script>
+        function onSubmit(e) {
+            e.preventDefault();
+            const token = grecaptcha.getResponse();
+            if (!token) {
+                alert("Por favor completa el CAPTCHA");
+                return;
+            }
+            // Aquí podrías enviar el token al launcher o backend
+            console.log("Captcha token:", token);
+        }
+    </script>
 </body>
 
 </html>
