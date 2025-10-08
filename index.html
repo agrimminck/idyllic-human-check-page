@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Idyllic Captchaa</title>
+    <title>Idyllic Captcha</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
@@ -16,6 +16,7 @@
     </form>
 
     <script>
+
         function onSubmit(e) {
             e.preventDefault();
             const token = grecaptcha.getResponse();
@@ -41,6 +42,11 @@
                 })
                 .then(data => alert("✅ CAPTCHA verificado. Vuelve al launcher"))
                 .catch(err => console.error(err));
+        }
+
+        function getUserIdFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            return parseInt(params.get("userId"));
         }
 
     </script>
