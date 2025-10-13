@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Idyllic Captcha</title>
+    <title>Idyllic Captchaa</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
@@ -31,7 +31,7 @@
                 return;
             }
 
-            fetch(`http://localhost:4008/auth/captcha-verify`, {
+            fetch(`http://localhost:4008/auth/verify-human-check`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token, userId })
