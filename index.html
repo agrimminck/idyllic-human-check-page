@@ -25,16 +25,16 @@
                 return;
             }
 
-            const userId = getUserIdFromQuery();
-            if (!userId) {
-                alert("❌ No se encontró userId en la URL");
+            const captchaId = getcaptchaIdFromQuery();
+            if (!captchaId) {
+                alert("❌ No se encontró captchaId en la URL");
                 return;
             }
 
             fetch(`http://localhost:4008/auth/verify-human-check`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token, userId })
+                body: JSON.stringify({ token, captchaId })
             })
                 .then(res => {
                     if (!res.ok) throw new Error("Error al verificar CAPTCHA");
@@ -44,9 +44,9 @@
                 .catch(err => console.error(err));
         }
 
-        function getUserIdFromQuery() {
+        function getcaptchaIdFromQuery() {
             const params = new URLSearchParams(window.location.search);
-            return params.get("userId");
+            return params.get("captchaId");
         }
 
     </script>
