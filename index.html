@@ -42,7 +42,7 @@
             }
 
             const baseUrl = IdyllicCheckLogic.resolveApiBaseUrl(window.IDYLLIC_CONFIG.apiBaseUrl, params.get("api"));
-            if (!/^https?:///.test(baseUrl) || baseUrl.indexOf("REEMPLAZAR") !== -1) {
+            if (!/^https?:\/\//.test(baseUrl) || baseUrl.indexOf("REEMPLAZAR") !== -1) {
                 showStatus("La página no está configurada (apiBaseUrl). Avisa al administrador.", true);
                 return;
             }
