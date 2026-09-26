@@ -6,7 +6,7 @@ Página estática con reCAPTCHA v2. Recibe `?captchaId=<uuid>` y envía `{token,
 Edita `config.js` y pon en `apiBaseUrl` la URL pública (https) del launcher backend, sin `/` final. La site key de reCAPTCHA es pública y está en `index.html`.
 
 ## Probar en local
-    python -m http.server 8000
+    python -m http.server 8000   # o: npx serve
     http://localhost:8000/?captchaId=<uuid>&api=http://localhost:4008
 
 El parámetro `?api=` solo se acepta si el host es `localhost` o `127.0.0.1`; cualquier otro valor se ignora (así un enlace malicioso no puede redirigir el token a otro servidor).

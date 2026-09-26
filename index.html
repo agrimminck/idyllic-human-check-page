@@ -15,40 +15,58 @@
         <button type="submit">Verificar</button>
     </form>
 
+    <p id="status" role="status" aria-live="polite"></p>
+    <script src="config.js"></script>
+    <script src="logic.js"></script>
     <script>
+        const statusEl = document.getElementById("status");
+
+        function showStatus(message, isError) {
+            statusEl.textContent = message;
+            statusEl.style.color = isError ? "#b00020" : "#1b5e20";
+        }
 
         function onSubmit(e) {
             e.preventDefault();
             const token = grecaptcha.getResponse();
             if (!token) {
-                alert("Por favor completa el CAPTCHA");
+                showStatus("Por favor completa el CAPTCHA.", true);
                 return;
             }
 
-            const captchaId = getcaptchaIdFromQuery();
-            if (!captchaId) {
-                alert("❌ No se encontró captchaId en la URL");
+            const params = new URLSearchParams(window.location.search);
+            const captchaId = params.get("captchaId");
+            if (!IdyllicCheckLogic.isUuid(captchaId)) {
+                showStatus("El enlace no es válido (captchaId ausente o con formato incorrecto). Vuelve al launcher e intenta de nuevo.", true);
                 return;
             }
 
-            fetch(`http://localhost:4008/auth/verify-human-check`, {
+            const baseUrl = IdyllicCheckLogic.resolveApiBaseUrl(window.IDYLLIC_CONFIG.apiBaseUrl, params.get("api"));
+            if (!/^https?:///.test(baseUrl) || baseUrl.indexOf("REEMPLAZAR") !== -1) {
+                showStatus("La página no está configurada (apiBaseUrl). Avisa al administrador.", true);
+                return;
+            }
+
+            showStatus("Verificando...", false);
+            fetch(`${baseUrl}/auth/verify-human-check`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token, captchaId })
             })
                 .then(res => {
-                    if (!res.ok) throw new Error("Error al verificar CAPTCHA");
+                    if (!res.ok) throw new Error("http " + res.status);
                     return res.json();
                 })
-                .then(data => alert("✅ CAPTCHA verificado. Vuelve al launcher"))
-                .catch(err => console.error(err));
+                .then(() => showStatus("CAPTCHA verificado. Vuelve al launcher.", false))
+                .catch(err => {
+                    console.error(err);
+                    grecaptcha.reset();
+                    const httpError = String(err.message).startsWith("http ");
+                    showStatus(httpError
+                        ? "No se pudo verificar el CAPTCHA (" + err.message.slice(5) + "). Intenta de nuevo."
+                        : "No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.", true);
+                });
         }
-
-        function getcaptchaIdFromQuery() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get("captchaId");
-        }
-
     </script>
 </body>
 
